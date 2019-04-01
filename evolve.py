@@ -14,7 +14,7 @@ def one_breeding_cycle(male_sapiens, male_neanders, females):
     rule:
 
     male_sapiens + female(neanderthal) -> mixed species offspring
-    male_neanderthal + female(sapiens) -> miscarriage
+    male_neanderthal + female(sapiens) -> miscarriage if boy
     male_neanderthal + female(mixed) -> either miscarriage or mixed offspring
 
     Mixed race offspring are always classed as sapiens if they are male. (They
@@ -44,18 +44,15 @@ def one_breeding_cycle(male_sapiens, male_neanders, females):
         boy = random.randint(0, 1) == 0 # assume equal probability of boy or girl
         (is_sapiens, male) = find_partner(female, male_sapiens, male_neanders)
         mix = (male + female) * 0.5
+        if not boy:
+            # girls never miscarry (at least in this simulation)
+            girls.append(mix)
         if is_sapiens:
-            # picked a sapiens. No chance of miscarriage, so easy
-            if boy:
-                boy_sapiens.append(mix)
-            else:
-                girls.append(mix)
+            # no miscarriages with sapiens Y-chromosome
+            boy_sapiens.append(mix)
         elif not miscarry_with_neanderthal(female):
-            # picked a neanderthal, and tested for miscarriage
-            if boy:
-                boy_neanders.append(mix)
-            else:
-                girls.append(mix)
+            # picked a neanderthal, produced a male foetus, and tested for miscarriage
+            boy_neanders.append(mix)
 
     # Append the new individuals to the ends of the lists. We keep them
     # at the end, so position in the list is an indication of age. For
@@ -87,7 +84,7 @@ def find_partner(female, male_sapiens, male_neanders):
     # (L_inf norm) between the male and female. We take a number of draws and pick
     # the best. The number of draws makes a critical difference to the outcome.
 
-    NUMBER_OF_DRAWS = 4
+    NUMBER_OF_DRAWS = 5
 
     best_distance = 1.1      # the maximum possible is 1
     best_male = 0.0          # in practice this is always overridden
@@ -113,6 +110,8 @@ def find_partner(female, male_sapiens, male_neanders):
 def miscarry_with_neanderthal(female):
     '''Will sex between a neanderthal male and the given female result in
     miscarriage?
+
+    Assumes that the foetus is male so carries the neanderthal Y-chromosome.
 
     We make the simplifying assumption that the miscarriage-causing genes are
     equally spread among all genes, so whether a miscarriage occurs is a
@@ -192,7 +191,7 @@ if __name__ == '__main__':
     male_sapiens = [1.0] * 1000
     male_neanders = [0.0] * 1000
     females = [1.0, 0.0] * 1000
-    repeated_cycles(male_sapiens, male_neanders, females, 100)
+    repeated_cycles(male_sapiens, male_neanders, females, 200)
 
     mean_male_sapiens = sum(male_sapiens) / len(male_sapiens)
     if len(male_neanders) > 0:
