@@ -19,3 +19,9 @@ It would be unfeasible to try to exactly model the interaction between Neanderth
 
 The approach we take is very simple. There is a single mixed population of individuals. The starting state can be chosen, but defaults to equal numbers of male/female Sapiens/Neanderthals, all of whom are initially pure-bred. Each individual is represented by a single floating point number between zero and one, representing the proportion of Sapiens genes.
 
+## Results
+The folowing graph shows the results of ten runs, each with pool sizes from 1 to 6.
+
+![Graph showing percentage Sapiens genes by sexual pool size](EvolutionByPoolSize.png)
+
+You can see that for small pool sizes (1 to 3), the final mixture of Sapiens/Neanderthal genes is roughly 50%/50%. However, larger pool sizes, meaning more sexual selection, result in a clearer split. Most runs end up with mainly Sapiens genes, though a few runs end up with mainly Neanderthal genes. In other words, one species or the other goes extinct, and it is usually Neanderthals. A pool size of 5 results in genomes that range from 94% to 98% Sapiens, with one outlier where the genome ended up largely Neanderthal. A pool size of 6 results in genomes that are either 100% Sapiens or 100% Neanderthal.
