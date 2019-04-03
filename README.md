@@ -33,3 +33,9 @@ The folowing graph shows the results of sixty test runs, 10 each with pool sizes
 ![Graph showing percentage Sapiens genes by sexual pool size](EvolutionByPoolSizeWithAdjustedSexualSelection.png)
 
 You can see that when there is no sexual selection (pool size = 1), the final mixture of Sapiens/Neanderthal genes is roughly 50/50. However, larger pool sizes, meaning more sexual selection, result in a clearer split. When the pool size is very large, such as 10 (not shown on this graph), the two species remain completely separate, there are no miscarriages, and eventually one species or the other goes extinct just due to random noise. With intermediate pool sizes, there is some sexual selection but some mixing. Most runs end up with mainly Sapiens genes, though one outlier run ends up with mainly Neanderthal genes. In other words, one species or the other goes extinct, and it is usually Neanderthals. A pool size of 3 results in genomes that range from 89% to 93% Sapiens. A pool size of 4 results in genomes that range from 98% to 99% Sapiens.
+
+In all test runs bar one, the Neanderthal Y-chromosome went extinct. The following graph shows how long this took for each of the tests, split up by the size of the sexual selection pool:
+
+![Graph showing time to extinction of Neanderthal Y chromosome by sexual pool size](ReproductiveCyclesBeforeNeanderthalYGoesExtinct.png)
+
+The one case where the Neanderthal Y chromosome did not go extinct is shown by a zero on the graph. For small sexual selection pools, the Neanderthal Y-chromosome goes extinct quite quickly -- around 20 reproductive cycles. As the pool size increases, the two species stay distinct for longer, and the time to extinction rapidly increases, to between 60 and 100 reproductive cycles for a pool size of 6.
