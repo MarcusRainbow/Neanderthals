@@ -42,12 +42,21 @@ def one_breeding_cycle(male_sapiens, male_neanders, females, pool_size):
     boy_neanders = []
     girls = []
 
-    # Each female tries to mate. We assume that all females mate with at most one
-    # partner at a time, so we iterate through females rather than males. Males on
-    # the other hand may have zero, one or many partners in any cycle. 
-    for female in females:
+    # Loop until the desired proportion of females are left who have not reproduced
+    # or miscarried. We default to 50%, which is the proportion that would be left
+    # if each male selected one female on average.
+    PROPORTION_FEMALES_LEFT = 0.5
+    females_left = int(len(females) * PROPORTION_FEMALES_LEFT)
+    females_to_reproduce = females[:]
+    while len(females_to_reproduce) > females_left:
+        # Randomly pick a male by using find_partner with a pool size of 1.
+        # female is ignored, so arbitrarily pick 0.5
+        (is_sapiens, male) = find_partner(0.5, male_sapiens, male_neanders, 1)
+
+        # Allow that male to pick a female
+        female = find_and_remove_female(male, females_to_reproduce, pool_size)
+
         boy = random.randint(0, 1) == 0 # assume equal probability of boy or girl
-        (is_sapiens, male) = find_partner(female, male_sapiens, male_neanders, pool_size)
         mix = (male + female) * 0.5
         if not boy:
             # girls never miscarry (at least in this simulation)
@@ -101,9 +110,8 @@ def find_partner(female, male_sapiens, male_neanders, pool_size):
     best_male = 0.0          # in practice this is always overridden
     best_is_sapiens = False  # this is also overridden
 
-    # Adjust the female, pushing her to one or other extreme.
-    exactly_half = female == 0.5
-    adj_female = 0.0 if female < 0.5 else 1.0
+    # experimentally adjust the female, pushing her to one or other extreme
+    adj_female = 0.0 if female <= 0.5 else 1.0
 
     for _ in range(pool_size):
         pick = random.randint(0, n_total - 1)
@@ -113,10 +121,6 @@ def find_partner(female, male_sapiens, male_neanders, pool_size):
         else:
             male = male_neanders[pick - n_sapiens]
 
-        # if the female is exactly half, no point choosing
-        if exactly_half:
-            return (is_sapiens, male)
-
         distance = abs(male - adj_female)   # L infinite norm
         if distance < best_distance:
             best_distance = distance
@@ -125,6 +129,46 @@ def find_partner(female, male_sapiens, male_neanders, pool_size):
     
     assert(best_distance <= 1.0)
     return (best_is_sapiens, best_male)
+
+def find_and_remove_female(male, females, pool_size):
+    ''' Finds and removes a female reproductive partner.
+   
+    Args:
+        male (float): the sapiensness of the male who is looking for a partner
+        females (List[float]): list of females. The one we find is removed.
+        pool_size (int): how many females to consider when finding the best 
+
+    Returns:
+        float: represents the sapiensness of the female found.
+
+    '''
+
+    n_females = len(females)
+    assert(n_females > 0)
+
+    # We assume that the genes for fancying sapiens generally go with sapiens
+    # genes and vice versa. To generalise, we try to minimize the genetic distance
+    # (L_inf norm) between the male and female. We take a number of draws and pick
+    # the best. The number of draws makes a critical difference to the outcome.
+
+    best_distance = 1.1      # the maximum possible is 1
+    best_pick = 0            # always overridden
+
+    # experimentally adjust the male, pushing him to one or other extreme
+    adj_male = 0.0 if male <= 0.5 else 1.0
+
+    for _ in range(pool_size):
+        pick = random.randint(0, n_females - 1)
+        female = females[pick]
+
+        distance = abs(female - adj_male)   # L infinite norm
+        if distance < best_distance:
+            best_distance = distance
+            best_pick = pick
+    
+    # return and delete the picked female
+    assert(best_distance <= 1.0)
+    return females.pop(best_pick)
 
 def miscarry_with_neanderthal(female):
     '''Will sex between a neanderthal male and the given female result in
@@ -177,57 +221,55 @@ def one_culling_cycle(male_sapiens, male_neanders, females):
         None: The input lists are modified in situ.
     '''
 
-    # Experimentally kill off males and females at random, rather than
-    # worrying about individual population totals
-    if False:
-
-        print("Before cull: sapiens={}, neanders={}, females={}".format(len(male_sapiens), len(male_neanders), len(females)))
-
-        MAX_POPULATION = 2000
-        while True:
-            n_sapiens = len(male_sapiens)
-            n_neanders = len(male_neanders)
-            n_females = len(females)
-            n_population = n_sapiens + n_neanders + n_females
-
-            if n_population < MAX_POPULATION:
-                print("After cull: sapiens={}, neanders={}, females={}".format(len(male_sapiens), len(male_neanders), len(females)))
-                return
-            
-            pick = random.randint(0, n_population - 1)
-            if pick < n_sapiens:
-                del male_sapiens[pick]
-            elif pick < n_sapiens + n_neanders:
-                del male_neanders[pick - n_sapiens]
-            else:
-                del females[pick - n_sapiens - n_neanders]
-
     # For now, we keep things really simple, and just keep the total
     # males and females to some maximum, by killing the oldest. We also
     # kill some fixed number each year from each population, just to avoid
     # steady state solutions where nobody ever dies.
     MALE_MAX_POPULATION = 10000
     FEMALE_MAX_POPULATION = 10000
-    ALWAYS_KILL = 10
+    ALWAYS_KILL = 0
 
-    n_sapiens = len(male_sapiens)
-    n_neanders = len(male_neanders)
-    n_males = n_sapiens + n_neanders
+    # method 1 -- kill the oldest
+    if False:
+        n_sapiens = len(male_sapiens)
+        n_neanders = len(male_neanders)
+        n_males = n_sapiens + n_neanders
 
-    # Kill excess old women
-    n_females = len(females)
-    kill_females = max(n_females - FEMALE_MAX_POPULATION - ALWAYS_KILL, 0) + ALWAYS_KILL
-    del females[0:kill_females]
+        # Kill excess old women
+        n_females = len(females)
+        kill_females = max(n_females - FEMALE_MAX_POPULATION - ALWAYS_KILL, 0) + ALWAYS_KILL
+        del females[0:kill_females]
 
-    # Kill excess old men. We have to be careful here, because we
-    # want to equally kill neanderthals and sapiens according to
-    # the proportions in their populations. (Not totally sure this
-    # is fair, as the ages may be different.)
-    kill = max(n_males - MALE_MAX_POPULATION - ALWAYS_KILL, 0)
-    kill_neanders = (kill * n_neanders) // n_males + ALWAYS_KILL
-    kill_sapiens = (kill * n_sapiens) // n_males + ALWAYS_KILL
-    del male_neanders[0:kill_neanders]
-    del male_sapiens[0:kill_sapiens]
+        # Kill excess old men. We have to be careful here, because we
+        # want to equally kill neanderthals and sapiens according to
+        # the proportions in their populations. (Not totally sure this
+        # is fair, as the ages may be different.)
+        kill = max(n_males - MALE_MAX_POPULATION - ALWAYS_KILL, 0)
+        kill_neanders = (kill * n_neanders) // n_males + ALWAYS_KILL
+        kill_sapiens = (kill * n_sapiens) // n_males + ALWAYS_KILL
+        del male_neanders[0:kill_neanders]
+        del male_sapiens[0:kill_sapiens]
+
+    # method 2: kill at random
+    else:
+        # Kill excess women
+        n_females = len(females)
+        kill_females = max(n_females - FEMALE_MAX_POPULATION - ALWAYS_KILL, 0) + ALWAYS_KILL
+        for _ in range(kill_females):
+            kill = random.randint(0, len(females) - 1)
+            del females[kill]
+
+        # Kill excess men
+        n_sapiens = len(male_sapiens)
+        n_neanders = len(male_neanders)
+        n_males = n_sapiens + n_neanders
+        kill_males = max(n_males - MALE_MAX_POPULATION - ALWAYS_KILL, 0) + ALWAYS_KILL
+        for _ in range(kill_males):
+            kill = random.randint(0, len(male_sapiens) + len(male_neanders) - 1)
+            if kill < len(male_sapiens):
+                del male_sapiens[kill]
+            else:
+                del male_neanders[kill - len(male_sapiens)]
 
 def repeated_cycles(male_sapiens, male_neanders, females, pool_size, max_cycles, extra_cycles):
     ''' Repeatedly alternates breeding and culling cycles.
@@ -255,7 +297,15 @@ def repeated_cycles(male_sapiens, male_neanders, females, pool_size, max_cycles,
 
     for cycle in range(max_cycles):
         one_breeding_cycle(male_sapiens, male_neanders, females, pool_size)
+        #print("breed")
+        #print(male_sapiens)
+        #print(male_neanders)
+        #print(females)
         one_culling_cycle(male_sapiens, male_neanders, females)
+        #print("cull")
+        #print(male_sapiens)
+        #print(male_neanders)
+        #print(females)
 
         # No point continuing long if there are no neanderthal y-chromosomes left.
         # The population stabilises very quickly
@@ -306,12 +356,12 @@ if __name__ == '__main__':
     print_header()
 
     for _ in range(10):   # repeated tests with different MonteCarlo draws   
-        for pool_size in range(1, 7):    # repeat with different pool sizes
+        for pool_size in range(1, 6):    # repeat with different pool sizes
 
-            male_sapiens = [1.0] * 200
-            male_neanders = [0.0] * 200
-            females = [1.0, 0.0] * 200
-            cycles = repeated_cycles(male_sapiens, male_neanders, females, pool_size, 100, 40)
+            male_sapiens = [1.0] * 1000
+            male_neanders = [0.0] * 1000
+            females = [1.0, 0.0] * 1000
+            cycles = repeated_cycles(male_sapiens, male_neanders, females, pool_size, 200, 40)
             print_stats(male_sapiens, male_neanders, females, pool_size, cycles)
 
  
