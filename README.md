@@ -78,3 +78,11 @@ With these changes, the algorithm is more complicated and runs extremely slowly.
 
 ![Graph showing percentage Sapiens genes by sexual pool size, with full genome modelling](EvolutionByPoolSizeWithFullGeneHandling.png)
 
+You can see from these results that there is more noise in the convergence. This is reduced by increasing the number of genes in each category (the test had just 20 pairs in each of appearance, desire, miscarriage and others) though this slows down the test. Even so, the great majority of tests follow the same pattern as the simplistic model, with 92% to 98% Sapiens genes with a sexual selection pool size of 4.
+
+### No spatial/geographic modelling
+The algorithm ignores the spatial position of any of the individuals in the population, except that the sexual selection pool size partly represents spatial segregation into small groups.
+
+Reality must have been far more complex. A relatively small group of Sapiens entered the territory of the Neaderthals, though we currently know nothing of how often they met or how they interacted, apart from the genetic evidence. Were there neighboring tribes of Sapiens and Neanderthals? Most likely, there were areas that were pure Sapiens and pure Neanderthal, with some border areas of interaction and cross-breeding. The effect of this cross-breeding would diffuse through the remainder of the population. Periodic resource pressure, such as ice ages, would cause some isolated populations to die out and some long-distance migration. There was probably violence between Neanderthal and Sapiens, as well as intra-species conflict.
+
+It is impossible to know, let alone model, the details of the geosocial interaction, but we can model some extreme cases, as a counterpoint to the unlimited interaction model already tested. This remains a research project.
