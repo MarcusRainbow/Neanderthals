@@ -74,5 +74,7 @@ The algorithm treats the genome as a percentage, between 0% (pure Neanderthal) a
 
 I rewrote the algorithm so it handled the genetics far more accurately. The new algorithm correctly implements Mendel's rules, though there are simplifications: the numbers of genes are small; we assume one-to-one mapping between appearance genes and the genes that control whether these are seen as attractive; we assume that the phenotype is differently affected by all three possible states of the two genes, and that these act monotonically (Sapiens/Neanderthal cross lies between pure Sapiens and pure Neanderthal).
 
-With these changes, the algorithm is more complicated and runs extremely slowly. For example, it is only feasible to run with small sexual selection pool sizes. However, the results have the same form as the simplistic modelling of genes as percentages.
+With these changes, the algorithm is more complicated and runs extremely slowly. For example, it is only feasible to run with small sexual selection pool sizes. However, the results have the same form as the simplistic modelling of genes as percentages. The following graph shows the results:
+
+![Graph showing percentage Sapiens genes by sexual pool size, with full genome modelling](EvolutionByPoolSizeWithFullGeneHandling.png)
 
