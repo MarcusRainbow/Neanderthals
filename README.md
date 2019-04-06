@@ -14,10 +14,17 @@ This computer program allows us to test this hypothesis. It uses Monte-Carlo sim
 
 Reasonable modelling assumptions, exactly symmetric between Sapiens and Neanderthal apart from the miscarriages, do indeed result in genetic compositions in line with those seen in modern white Europeans, as can be seen by running the program with its default parameters.
 
-## Assumptions
-It would be unfeasible to try to exactly model the interaction between Neanderthals and Sapiens. We do not have the detailed knowledge or the computer time. Moreover, many of the details, such as the nature of the sexual interaction -- rape/monogamy/promiscuity/... -- are unlikely to affect the final genetic composition very significantly.
+## List of files
+* `evolve.py` The simple algorithm, implemented in python. To execute it, run `python evolve.py`
+* `evolve_with_male_selection.py` Modified algorithm that allows males rather than females to do the choosing
+* `evolve_multi_gene.py` Algorithm rewritten to handle Mendel's laws correctly. Runs more slowly
+* `results.xlsx` Excel spreadsheet showing the results of the algorithm, and tests that examine the assumptions
+* `README.md` This file
 
-The approach we take is very simple. There is a single mixed population of individuals. The starting state can be chosen, but defaults to equal numbers of male/female Sapiens/Neanderthals, all of whom are initially pure-bred. Each individual is represented by a single floating point number between zero and one, representing the proportion of Sapiens genes. Whether individuals are male or female, and whether they carry the Neanderthal Y-chromosome, are represented by keeping these individuals in different lists.
+## Assumptions
+It would be unfeasible to try to exactly model the interaction between Neanderthals and Sapiens. We do not have the detailed knowledge or the computer time. Moreover, many of the details, such as the nature of the sexual interaction are unlikely to affect the final genetic composition very significantly.
+
+The approach we take is very simple. There is a single mixed population of individuals. The starting state can be chosen, but defaults to equal numbers of male/female Sapiens/Neanderthals, all of whom are initially pure-bred. Each individual is represented by a percentage, representing the proportion of Sapiens genes. Whether individuals are male or female, and whether they carry the Neanderthal Y-chromosome, are represented by keeping these individuals in different lists.
 
 We want to avoid individuals living indefinitely, and this is achieved simply by ordering the lists by age, killing those at the head of the list first to keep the population within predefined limits.
 
@@ -55,12 +62,12 @@ Here we list some of the more eggregious assumptions made in the model, and desc
 ### Sexual selection by females only
 When a woman is made pregnant, she is taken out of circulation for that reproductive cycle, but a man is able to mate with others. Thus it is easiest to iterate through the list of women, allowing each to pick the most attractive man from some randomly chosen pool. However, this does not fit very closely with reality, where sexual selection is performed by both sexes, and indeed some women are not made pregnant at all.
 
-I experimentally changed the algorithm to randomly select men, who would then pick the most attractive woman from a pool. I also needed to reduce the number of women actually getting pregnant, otherwise the selection ends up being forced so that all women are chosen. With this change, I get exactly the same form of results as when the selection is done by women.
+I experimentally changed the algorithm to randomly select men, who would then pick the most attractive woman from a pool. I also needed to reduce the number of women actually getting pregnant, otherwise the selection ended up being forced so that all women are chosen. With this change, I get exactly the same form of results as when the selection is done by women.
 
 Given that the extremes give the same results, it seems reasonable that more realistic and complex methods of selection would also give similar results.
 
 ### Only killing the oldest individuals
-The simple algorithm just kills the oldest individuals to keep the overall population size, separately for men and women, constant. The opposite extreme would be to kill individuals at random, ignoring the age and gender. When I implemented this scheme, again the results had the same form. Given the behaviour of these extremes, I would expect that more realistic algorithms, killing some individuals at random, and allowing old age to kill others, would behave the same way.
+The simple algorithm just kills the oldest individuals to keep the overall population size, separately for men and women, constant. The opposite extreme would be to kill individuals at random, ignoring the age and gender. When I implemented this scheme, again the results had the same form. Given the behaviour of these extremes, I would expect that more realistic intermediate algorithms, killing some individuals at random, and allowing old age to kill others, would behave the same way.
 
 ### Simplistic treatment of genetics
 The algorithm treats the genome as a percentage, between 0% (pure Neanderthal) and 100% (pure Sapiens). In reality, a genome has many independent genes arranged in pairs, where one of each pair is randomly selected and passed to the offspring. Some genes affect appearance and behaviour, which may affect sexual attractiveness. Some genes affect how much the holder fancies particular aspects of appearance or behaviour, which also affects sexual selection. Some genes affect the likelihood of miscarriage in the presence of Neanderthal Y-chromosomes. Many genes differ between Neanderthals and Sapiens but have no impact on sexual selection or miscarriage.
