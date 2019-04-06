@@ -25,10 +25,6 @@ Sexual selection is really important, as can be seen by the results below. Witho
 
 The method of sexual selection is to allow each female to choose from a small randomly chosen pool of males. She picks the most attractive, which is defined as the one whose genetic mix most closely matches the closest species to her own. Thus a female with more Neanderthal genes than Sapiens, presented with a pool of mixed species males, would pick the one with the most Neanderthal genes.
 
-Originally, we tried a sexual selection technique which matched the male who most closely matched the female in proportion. For example, a 75% Sapiens female would try to find a 75% Sapiens male. This method does work, but less well, and it is further from reality. In practice, a 75% Sapiens female will be attracted by 75% of Sapiens traits and 25% Neanderthal, but there is no guarantee that those traits will be the same as in some random 75% Sapiens male. The closest match would be a fully Sapiens male, with a guaranteed 75% match -- greater than the average match for any mixed species male.
-
-As a technical point, it ought not to matter whether we class a 50% individual as a Sapiens or a Neanderthal, as exactly 50% should almost never happen. In these tests, however, exactly 50% is quite common, particularly at the start of the test runs. I experimented with assigning the 50% individuals in both possible directions -- it made no difference to the form of the final result.
-
 ## Results
 The folowing graph shows the results of sixty test runs, 10 each with pool sizes from 1 to 6, using the assumptions detailed above.
 
@@ -52,3 +48,24 @@ When there is sexual selection, the probabilities of mixed-species offspring dec
 Consider now the other genes in the genome. When all 7 offspring are equally probable, there are two pure Sapiens, two pure Neanderthal, and three 50% mixes. The overall expectation is 50%. The second generation, however, is not so balanced. I shall not enumerate all the options, but there are now eleven possible offspring, and the 75% Sapiens male is not completely matched by the 75% Neanderthal male, which has a 50% chance of miscarriage. The overall expectation is now slightly biased towards Sapiens.
 
 Sexual selection has two effects. It tends to pull any solution strongly towards one side or the other, and it keeps the Neanderthal Y-chromosome alive for longer, so the pro-sapiens bias lasts for more generations. The net result is that this slight bias towards Sapiens turns into a final stable distribution that is strongly Sapiens in most cases.
+
+## Examining the assumptions
+Here we list some of the more eggregious assumptions made in the model, and describe experiments that help to justify those assumptions.
+
+### Sexual selection by females only
+When a woman is made pregnant, she is taken out of circulation for that reproductive cycle, but a man is able to mate with others. Thus it is easiest to iterate through the list of women, allowing each to pick the most attractive man from some randomly chosen pool. However, this does not fit very closely with reality, where sexual selection is performed by both sexes, and indeed some women are not made pregnant at all.
+
+I experimentally changed the algorithm to randomly select men, who would then pick the most attractive woman from a pool. I also needed to reduce the number of women actually getting pregnant, otherwise the selection ends up being forced so that all women are chosen. With this change, I get exactly the same form of results as when the selection is done by women.
+
+Given that the extremes give the same results, it seems reasonable that more realistic and complex methods of selection would also give similar results.
+
+### Only killing the oldest individuals
+The simple algorithm just kills the oldest individuals to keep the overall population size, separately for men and women, constant. The opposite extreme would be to kill individuals at random, ignoring the age and gender. When I implemented this scheme, again the results had the same form. Given the behaviour of these extremes, I would expect that more realistic algorithms, killing some individuals at random, and allowing old age to kill others, would behave the same way.
+
+### Simplistic treatment of genetics
+The algorithm treats the genome as a percentage, between 0% (pure Neanderthal) and 100% (pure Sapiens). In reality, a genome has many independent genes arranged in pairs, where one of each pair is randomly selected and passed to the offspring. Some genes affect appearance and behaviour, which may affect sexual attractiveness. Some genes affect how much the holder fancies particular aspects of appearance or behaviour, which also affects sexual selection. Some genes affect the likelihood of miscarriage in the presence of Neanderthal Y-chromosomes. Many genes differ between Neanderthals and Sapiens but have no impact on sexual selection or miscarriage.
+
+I rewrote the algorithm so it handled the genetics far more accurately. The new algorithm correctly implements Mendel's rules, though there are simplifications: the numbers of genes are small; we assume one-to-one mapping between appearance genes and the genes that control whether these are seen as attractive; we assume that the phenotype is differently affected by all three possible states of the two genes, and that these act monotonically (Sapiens/Neanderthal cross lies between pure Sapiens and pure Neanderthal).
+
+With these changes, the algorithm is more complicated and runs extremely slowly. For example, it is only feasible to run with small sexual selection pool sizes. However, the results have the same form as the simplistic modelling of genes as percentages.
+
