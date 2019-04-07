@@ -92,4 +92,6 @@ The algorithm assumes that every pregnant Sapiens woman carrying a boy with Nean
 
 I first experimented with reducing the probability of miscarriage. The following graph shows what happens if there is only a 25% chance of a miscarriage when a Sapiens woman carries a foetus with Neanderthal Y-chromosomes.
 
-It now takes, on average, more than three times as long for the Neanderthal Y-chromosome to go extinct (111 reproductive cycles rather than 34), even when it does at all. In 23 of 60 test runs, the Y-chromosome did not go extinct. If we ignore these cases, the percentage Sapiens in the genome when the pool size is 4 ranges from 97% to 99%. Thus the same form of results appears, just less reliably and taking longer.
+![Graph showing percentage Sapiens genes by sexual pool size, with 25% chance of miscarriage](EvolutionByPoolSizeWith25PercentMiscarriage.png)
+
+It now takes, on average, more than three times as long for the Neanderthal Y-chromosome to go extinct (111 reproductive cycles rather than 34), even when it does at all. In 23 of 60 test runs, the Y-chromosome did not go extinct within 1000 cycles. If we ignore these cases, the percentage Sapiens in the genome when the pool size is 4 ranges from 97% to 99%. Thus the same form of results appears, just less reliably and taking longer.
