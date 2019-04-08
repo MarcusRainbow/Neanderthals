@@ -98,10 +98,19 @@ It now takes, on average, more than three times as long for the Neanderthal Y-ch
 
 The other ideas in the Mendez, Poznik, Castellano and Bustamante are harder to evaluate, as they require assumptions about how males and females form relationships. If a female Sapiens becomes more likely to have miscarriages or homosexual offspring after mating with a Neanderthal male, is this more likely to affect subsequent offspring of that Neanderthal, other Neanderthals, or partners of any species. It depends whether relationships are monogamous, exogamous or other types. If relationships tend to be monogamous or with kin of an original partner, which seems a reasonable assumption, the effect will be to further reduce the offspring of male Neanderthals and female Sapiens, both male and female.
 
-To test these effects, I modified the above code that tests for 25% chance of miscarriage, to also add a 12.5% chance of miscarriage of female foetuses. With this change, there is a very clear split between a final population that is largely Sapiens, or one that is largely Neanderthal. There is much less predominance of Sapiens results. In fact, only 14 out of the 30 results with pool sizes greater than two were predominantly Sapiens as can be seen in the following graph.
+The most extreme case is no miscarriage or any other causes of extinction of Neanderthal Y-chromosomes. We expect the results to be symmetrical (give or take some noise) between Sapiens and Neanderthal.
 
-![Graph showing percentage Sapiens genes by sexual pool size, with 25% male and 12.5% female miscarriage](EvolutionByPoolSizeWithQuarterMaleAndEighthFemaleMiscarriage.png)
+![Graph showing percentage Sapiens genes by sexual pool size, with no miscarriage](EvolutionByPoolSizeWithNoMiscarriage.png)
 
-Thus, making the rules for miscarriage weaker or more complex gives far more scenarios where Neanderthals end up as the dominant species (though still generally with Sapiens Y-chromosomes). However, in every case one or other species dominates the resulting genome.
+As the size of the pool of available mates increases, the extent of sexual selection also increases, and the final percentage splits into a strongly bimodal distribution of almost all Sapiens or almost all Neanderthal. As expected, the graph is roughly symmetrical, with half of the tests going each way.
 
+### Conclusions
+Neanderthals were the only human species in Europe for nearly 400,000 years, yet within tens of thousands of years they were all but wiped out by Sapiens. Neanderthals were stronger, more cold-adapted and probably as clever, but the DNA of modern Europeans is typically only a couple of percent Neanderthal.
 
+Monte-Carlo simulations of sexual selection show that it is very likely for one or other species to dominate: a more even distribution is strongly selected against. Sexual selection only acts on a subset of the genome -- genes that affect appearance, behaviour, or the desire for particular traits. However, the simulations show that other genes follow along, so the resulting genome is likely to be mainly Sapiens or Neanderthal.
+
+We know there is some effect that has made the Neanderthal Y-chromosome extinct. Mendez et al speculate about a number of possible causes, such as miscarriages in Sapiens females carrying Neanderthal foetuses. All of their possible causes result in extinction of the Neanderthal Y-chromosome, and most of the mechanisms also cause a small bias towards the Sapiens genome as well, as is shown here in the case of miscarriages.
+
+The effect of sexual selection is to amplify this small bias into a significant effect. In most of my simulations with a sexual selection pool size of four or more, the final genome was more than 98% Sapiens. This effect is robust and reproducible. It occurs both when males and when females have the choice of sexual partner. It occurs both with a simplistic genetic model, and a full modelling of Mendelian genes. It occurs whether individuals die of old age or at random.
+
+There is more research to be done. In particular, more realistic geographical models need to be tried, with tribes of Sapiens and Neanderthals interacting only in some border areas. However, the tests done so far show that we do not need to postulate special powers, cultures or toolsets for Sapiens to end up the dominant species that it is.
